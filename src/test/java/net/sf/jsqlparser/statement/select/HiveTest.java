@@ -47,4 +47,13 @@ public class HiveTest {
 
         assertSqlCanBeParsedAndDeparsed(sql, true);
     }
+
+    @Test
+    public void testGroupingSets() throws Exception {
+        String sql = "SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b GROUPING SETS ( (a, b), a, b, ( ) )";
+        Select select = (Select) CCJSqlParserUtil.parse(sql);
+
+        assertStatementCanBeDeparsedAs(select, sql, true);
+        assertSqlCanBeParsedAndDeparsed(sql, true);
+    }
 }

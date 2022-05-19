@@ -37,6 +37,9 @@ public class GroupByDeParser {
             }
         }
         if (groupBy.getGroupingSets().size() > 0) {
+            if (buffer.charAt(buffer.length() - 1) != ' ') {
+                buffer.append(' ');
+            }
             buffer.append("GROUPING SETS (");
             boolean first = true;
             for (Object o : groupBy.getGroupingSets()) {

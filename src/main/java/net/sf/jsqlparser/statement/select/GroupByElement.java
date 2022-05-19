@@ -58,7 +58,11 @@ public class GroupByElement {
 
         if (groupByExpressions.size() > 0) {
             b.append(PlainSelect.getStringList(groupByExpressions));
-        } else if (groupingSets.size() > 0) {
+        }
+        if (groupingSets.size() > 0) {
+            if (b.charAt(b.length() - 1) != ' ') {
+                b.append(' ');
+            }
             b.append("GROUPING SETS (");
             boolean first = true;
             for (Object o : groupingSets) {

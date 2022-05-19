@@ -2189,6 +2189,17 @@ GroupByElement GroupByColumnReferences():
     (
         columnReference=SimpleExpression() {groupBy.addGroupByExpression(columnReference); }
         ("," columnReference=SimpleExpression()  {groupBy.addGroupByExpression(columnReference); } )*
+        (
+          <K_GROUPING> <K_SETS> "("
+              ( LOOKAHEAD(2) "(" ")" { groupBy.addGroupingSet(new ExpressionList()); }
+                  | LOOKAHEAD(3) "(" list = SimpleExpressionList() ")" { groupBy.addGroupingSet(list); }
+                  | expr = SimpleExpression() { groupBy.addGroupingSet(expr); } )
+
+              ( "," ( LOOKAHEAD(2) "(" ")" { groupBy.addGroupingSet(new ExpressionList()); }
+                  | LOOKAHEAD(3) "(" list = SimpleExpressionList() ")" { groupBy.addGroupingSet(list); }
+                  | expr = SimpleExpression() { groupBy.addGroupingSet(expr); } ) )*
+          ")"
+        )?
     |
         <K_GROUPING> <K_SETS> "("
             ( LOOKAHEAD(2) "(" ")" { groupBy.addGroupingSet(new ExpressionList()); }
