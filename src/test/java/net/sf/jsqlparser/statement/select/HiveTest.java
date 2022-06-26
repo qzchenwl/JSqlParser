@@ -49,7 +49,8 @@ public class HiveTest {
 
     @Test
     public void testGroupByGroupingSets() throws Exception {
-        String sql = "SELECT\n"
+        String sql =
+              "SELECT\n"
             + "    C1, C2, C3, MAX(Value)\n"
             + "FROM\n"
             + "    Sometable\n"
