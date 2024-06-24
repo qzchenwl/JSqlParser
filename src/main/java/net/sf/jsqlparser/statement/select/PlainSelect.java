@@ -9,10 +9,8 @@
  */
 package net.sf.jsqlparser.statement.select;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.OracleHierarchicalExpression;
 import net.sf.jsqlparser.expression.OracleHint;
@@ -25,6 +23,7 @@ public class PlainSelect extends ASTNodeAccessImpl implements SelectBody {
     private List<SelectItem> selectItems;
     private List<Table> intoTables;
     private FromItem fromItem;
+    private List<LateralView> lateralViews;
     private List<Join> joins;
     private Expression where;
     private GroupByElement groupBy;
@@ -96,6 +95,38 @@ public class PlainSelect extends ASTNodeAccessImpl implements SelectBody {
 
     public void setWhere(Expression where) {
         this.where = where;
+    }
+
+    public List<LateralView> getLateralViews() {
+        return lateralViews;
+    }
+
+    public void setLateralViews(Collection<LateralView> lateralViews) {
+        if (this.lateralViews == null && lateralViews != null) {
+            this.lateralViews = new ArrayList<>();
+        } else {
+            this.lateralViews.clear();
+        }
+
+        if (lateralViews != null) {
+            this.lateralViews.addAll(lateralViews);
+        } else {
+            this.lateralViews = null;
+        }
+    }
+
+    public PlainSelect addLateralView(LateralView lateralView) {
+        if (this.lateralViews == null) {
+            this.lateralViews = new ArrayList<>();
+        }
+
+        this.lateralViews.add(lateralView);
+        return this;
+    }
+
+    public PlainSelect withLateralViews(Collection<LateralView> lateralViews) {
+        this.setLateralViews(lateralViews);
+        return this;
     }
 
     /**
@@ -349,6 +380,11 @@ public class PlainSelect extends ASTNodeAccessImpl implements SelectBody {
 
         if (fromItem != null) {
             sql.append(" FROM ").append(fromItem);
+            if (lateralViews != null) {
+                for (LateralView lateralView : lateralViews) {
+                    sql.append(" ").append(lateralView);
+                }
+            }
             if (joins != null) {
                 Iterator<Join> it = joins.iterator();
                 while (it.hasNext()) {

@@ -44,6 +44,11 @@ public class Alias {
         this.useAs = useAs;
     }
 
+    public Alias withUseAs(boolean useAs) {
+        this.useAs = useAs;
+        return this;
+    }
+
     public List<AliasColumn> getAliasColumns() {
         return aliasColumns;
     }

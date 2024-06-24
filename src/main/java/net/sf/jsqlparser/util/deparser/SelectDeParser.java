@@ -112,6 +112,12 @@ public class SelectDeParser implements SelectVisitor, SelectItemVisitor, FromIte
             plainSelect.getFromItem().accept(this);
         }
 
+        if (plainSelect.getLateralViews() != null) {
+            for (LateralView lateralView : plainSelect.getLateralViews()) {
+                deparseLateralView(lateralView);
+            }
+        }
+
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
                 deparseJoin(join);
@@ -415,6 +421,24 @@ public class SelectDeParser implements SelectVisitor, SelectItemVisitor, FromIte
             buffer.append(")");
         }
 
+    }
+
+
+    public void deparseLateralView(LateralView lateralView) {
+        buffer.append(" LATERAL VIEW");
+
+        if (lateralView.isUsingOuter()) {
+            buffer.append(" OUTER");
+        }
+
+        buffer.append(" ");
+        lateralView.getGeneratorFunction().accept(expressionVisitor);
+
+        if (lateralView.getTableAlias() != null) {
+            buffer.append(lateralView.getTableAlias());
+        }
+
+        buffer.append(lateralView.getColumnAlias());
     }
 
     @Override

@@ -20,6 +20,8 @@ import net.sf.jsqlparser.schema.*;
 import net.sf.jsqlparser.statement.*;
 import static net.sf.jsqlparser.test.TestUtils.*;
 import org.apache.commons.io.*;
+
+import static net.sf.jsqlparser.test.TestUtils.assertSqlCanBeParsedAndDeparsed;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -4159,5 +4161,17 @@ public class SelectTest {
     @Test
     public void testPreserveAndOperator_2() throws JSQLParserException {
         assertSqlCanBeParsedAndDeparsed("SELECT * FROM mytable WHERE (field_1 && ?)");
+    }
+
+    @Test
+    public void testLateralView() throws JSQLParserException {
+        String sqlStr1 =
+                "SELECT * FROM person LATERAL VIEW EXPLODE(ARRAY(30, 60)) tableName AS c_age LATERAL VIEW EXPLODE(ARRAY(40, 80)) AS d_age";
+
+        assertSqlCanBeParsedAndDeparsed(sqlStr1);
+
+        String sqlStr2 = "SELECT * FROM person LATERAL VIEW OUTER EXPLODE(ARRAY(30, 60)) AS c_age";
+
+        assertSqlCanBeParsedAndDeparsed(sqlStr2);
     }
 }
