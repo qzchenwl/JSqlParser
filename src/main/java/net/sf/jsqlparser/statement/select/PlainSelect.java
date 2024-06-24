@@ -104,7 +104,7 @@ public class PlainSelect extends ASTNodeAccessImpl implements SelectBody {
     public void setLateralViews(Collection<LateralView> lateralViews) {
         if (this.lateralViews == null && lateralViews != null) {
             this.lateralViews = new ArrayList<>();
-        } else {
+        } else if (this.lateralViews != null) {
             this.lateralViews.clear();
         }
 
